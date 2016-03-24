@@ -74,13 +74,10 @@ function checkPermits(options) {
 		});
 
 		casper.waitForSelector("#cs_idCell2x1x1 table tr table", function () {
-		    var days = this.evaluate(getAvailability);
-
-		    var monthCaptured = this.evaluate(getTheMonth);
-
-		    var siteName = this.evaluate(getSiteName);
-
-		    var daysAvailable = days.filter(function(day) { return day.slotsAvailable > 0; });
+		    var days = this.evaluate(getAvailability),
+			    monthCaptured = this.evaluate(getTheMonth),
+			    siteName = this.evaluate(getSiteName),
+			    daysAvailable = days.filter(function(day) { return day.slotsAvailable > 0; });
 
 			results[options.label].monthCaptured = monthCaptured;
 
@@ -126,4 +123,5 @@ casper.run(function() {
 	} else {
 		this.echo('Unfortunately, there are no spots available for the Watchman Campground.');
 	}
+	this.exit();
 });
