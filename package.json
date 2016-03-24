@@ -1,0 +1,17 @@
+{
+  "name": "zion-scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stuart Dotson",
+  "license": "ISC",
+  "dependencies": {
+    "casperjs": "^1.1.0-beta5",
+    "spooky": "^0.2.5",
+    "util": "^0.10.3",
+    "zombie": "^4.2.1"
+  }
+}
