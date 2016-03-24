@@ -6,6 +6,7 @@ var casper = require('casper').create({
     }
 });
 
+var campsites = require('./lib/campsites');
 
 var narrowsUrl = 'https://zionpermits.nps.gov/wilderness.cfm?TripTypeID=1';
 
@@ -28,23 +29,21 @@ var watchmanDates = [
 ];
 
 function getAvailability() {
-    var rows = document.querySelectorAll('#cs_idCell2x1x1 table tr:nth-of-type(12) table tr:nth-of-type(6) td');
+    var rows = document.querySelectorAll('#cs_idCell2x1x1 table tr:nth-of-type(10) table tr:nth-of-type(6) td');
     var jobs = [];
     for (var i = 0; i < rows.length; i++) {
         var span = rows[i].querySelector('span');
         var p = rows[i].querySelector('p');
         var job = {};
-
         job['dayNumber'] = span.innerText;
         job['slotsAvailable'] = p.innerText;
         jobs.push(job);
     }
-
     return jobs;
 }
 
 function getTheMonth() {
-	var month = document.querySelectorAll('#cs_idCell2x1x1 table tr:nth-of-type(12) table tr:first-child th')[0];
+	var month = document.querySelectorAll('#cs_idCell2x1x1 table tr:nth-of-type(10) table tr:first-child th')[0];
 	return month.innerText;
 }
 
@@ -68,14 +67,16 @@ function checkPermits(options) {
 
 	options.permits.forEach(function(campsite) {
 	    var site = {};
+
 		casper.waitForSelector('#chgresourceform', function() {
+			this.echo('inside first waitForSelector');
 			this.fill('form#chgresourceform', {
 		        'ResourceID' : campsite
 		    }, true);
 		});
 
-		casper.waitForSelector("#cs_idCell2x1x1 table tr table", function() {
-
+		casper.waitForSelector("#cs_idCell2x1x1 table tr table", function () {
+			this.echo('inside second waitForSelector');
 		    var days = this.evaluate(getAvailability);
 
 		    var monthCaptured = this.evaluate(getTheMonth);
@@ -84,10 +85,15 @@ function checkPermits(options) {
 
 		    var daysAvailable = days.filter(function(day) { return day.slotsAvailable > 0; });
 
+		    console.log(days);
+		    console.log(daysAvailable);
+		    console.log(siteName);
 			site.siteName = siteName;
 			site.daysAvailable = daysAvailable;
 			site.days = days;
-
+			console.log('days');
+			console.log(days);
+			this.echo(util.inspect(days, {showHidden: false, depth: 5}));
 			results[options.label].monthCaptured = monthCaptured;
 
 			if (daysAvailable.length) {
@@ -100,63 +106,29 @@ function checkPermits(options) {
 	return results;
 }
 
-function getTentSpaces() {
-	var tentOnly = document.querySelectorAll('.searchSummary .filters > div:nth-of-type(3) a')[0];
-	var walkTo = document.querySelectorAll('.searchSummary .filters > div:nth-of-type(4) a')[0];
-
-	return {
-		tentOnly: parseInt(tentOnly.title.slice(0,1),10), 
-		walkTo: parseInt(walkTo.title.slice(0,1),10)
-	};
-}
-
-function checkCampsites(dates) {
-	dates.forEach(function(day) {
-		casper.waitForSelector('#unifSearchForm', function() {
-			this.fill('form#unifSearchForm', {
-				lookingFor: '3100',
-		        arrivalDate: day.arrival,
-		        departureDate: day.departure
-		    }, true);    
-		})
-		.waitForResource('element.js', function() {
-			/*this.echo(this.fetchText('.matchSummary'));*/
-			var tentSpaces = this.evaluate(getTentSpaces);
-			tentSpaces.day = day;
-
-			if (tentSpaces.tentOnly > 0 || tentSpaces.WalkTo > 0) {
-				results.watchman.available.push(tentSpaces);
-			} else {
-				results.watchman.unavailable.push(tentSpaces);
-			}
-		});		
-	});
-}
-
 casper.start(narrowsUrl)
 	.then(function() {
-		checkPermits({permits: narrowsSites,label: 'narrows'});
-	})
-	.thenOpen(watchmanUrl)
-	.then(function() {
-		checkCampsites(watchmanDates);
-	})
-	.then(function() {
-		this.echo('Raw results');
-		this.echo('-------------------------------');
-
-		this.echo(util.inspect(results, {showHidden: false, depth: 5}));
-		this.echo('-------------------------------');
-		if (results.narrows.available.length) {
-			this.echo('Congratulations! There are spots available for the Zion Narrows Top Down Hike!');
-		} else {
-			this.echo('Unfortunately, there are no spots available for the Zion Narrows Top Down Hike.');
-		}
-		if (results.watchman.available.length) {
-			this.echo('Congratulations! There are spots available for the Watchman Campground!');
-		} else {
-			this.echo('Unfortunately, there are no spots available for the Watchman Campground.');
-		}
+		return checkPermits({permits: narrowsSites,label: 'narrows'});
 	});
+	/*.thenOpen(watchmanUrl)
+	.then(function() {
+		campsites.checkAvailability(watchmanDates);
+	})*/
 
-casper.run();
+casper.run(function() {
+	this.echo('Raw results');
+	this.echo('-------------------------------');
+
+	this.echo(util.inspect(results, {showHidden: false, depth: 7}));
+	this.echo('-------------------------------');
+	if (results.narrows.available.length) {
+		this.echo('Congratulations! There are spots available for the Zion Narrows Top Down Hike!');
+	} else {
+		this.echo('Unfortunately, there are no spots available for the Zion Narrows Top Down Hike.');
+	}
+	if (results.watchman.available.length) {
+		this.echo('Congratulations! There are spots available for the Watchman Campground!');
+	} else {
+		this.echo('Unfortunately, there are no spots available for the Watchman Campground.');
+	}
+});
