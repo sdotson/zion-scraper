@@ -66,17 +66,14 @@ var results = {
 function checkPermits(options) {
 
 	options.permits.forEach(function(campsite) {
-	    var site = {};
 
 		casper.waitForSelector('#chgresourceform', function() {
-			this.echo('inside first waitForSelector');
 			this.fill('form#chgresourceform', {
 		        'ResourceID' : campsite
 		    }, true);
 		});
 
 		casper.waitForSelector("#cs_idCell2x1x1 table tr table", function () {
-			this.echo('inside second waitForSelector');
 		    var days = this.evaluate(getAvailability);
 
 		    var monthCaptured = this.evaluate(getTheMonth);
@@ -85,16 +82,13 @@ function checkPermits(options) {
 
 		    var daysAvailable = days.filter(function(day) { return day.slotsAvailable > 0; });
 
-		    console.log(days);
-		    console.log(daysAvailable);
-		    console.log(siteName);
-			site.siteName = siteName;
-			site.daysAvailable = daysAvailable;
-			site.days = days;
-			console.log('days');
-			console.log(days);
-			this.echo(util.inspect(days, {showHidden: false, depth: 5}));
 			results[options.label].monthCaptured = monthCaptured;
+
+			site = {
+				siteName: siteName,
+				daysAvailable: daysAvailable,
+				days: days
+			};
 
 			if (daysAvailable.length) {
 				results[options.label].available.push(site);
@@ -109,11 +103,12 @@ function checkPermits(options) {
 casper.start(narrowsUrl)
 	.then(function() {
 		return checkPermits({permits: narrowsSites,label: 'narrows'});
-	});
-	/*.thenOpen(watchmanUrl)
+	})
+	.thenOpen(watchmanUrl)
 	.then(function() {
-		campsites.checkAvailability(watchmanDates);
-	})*/
+		return campsites.checkAvailability(watchmanDates);
+	});
+
 
 casper.run(function() {
 	this.echo('Raw results');
