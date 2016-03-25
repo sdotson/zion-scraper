@@ -1,6 +1,5 @@
 var spawn = require('child_process').spawn;
-
-var casperChild = spawn('casperjs', ['app.js']);
+var casperChild = spawn('casperjs', ['casperTasks.js']);
 
 var result = '';
 

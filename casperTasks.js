@@ -2,7 +2,8 @@ var util = require('util');
 var casper = require('casper').create({
 	pageSettings: {
         userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:23.0) Gecko/20130404 Firefox/23.0",
-        webSecurityEnabled: false
+        webSecurityEnabled: false,
+        loadImages:  false
     }
 });
 
@@ -49,22 +50,7 @@ casper.start(narrowsUrl)
 		return campsites.checkAvailability(watchmanDates);
 	});
 
-
 casper.run(function() {
-	this.echo('Raw results');
-	this.echo('-------------------------------');
-
 	this.echo(util.inspect(results, {showHidden: false, depth: 7}));
-	this.echo('-------------------------------');
-	if (results.narrows.available.length) {
-		this.echo('Congratulations! There are spots available for the Zion Narrows Top Down Hike!');
-	} else {
-		this.echo('Unfortunately, there are no spots available for the Zion Narrows Top Down Hike.');
-	}
-	if (results.watchman.available.length) {
-		this.echo('Congratulations! There are spots available for the Watchman Campground!');
-	} else {
-		this.echo('Unfortunately, there are no spots available for the Watchman Campground.');
-	}
 	this.exit();
 });
