@@ -51,6 +51,6 @@ casper.start(narrowsUrl)
 	});
 
 casper.run(function() {
-	this.echo(util.inspect(results, {showHidden: false, depth: 7}));
+	this.echo(JSON.stringify(results));
 	this.exit();
 });
