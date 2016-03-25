@@ -4,6 +4,7 @@ var casperChild = spawn('casperjs', ['casperTasks.js']);
 var result = '';
 
 function sendAlert(thing) {
+	/* will eventually be a sparkPost API call to send an email */
 	console.log('Available permits/reservations have been detected for ' + thing);
 }
 
