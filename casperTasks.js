@@ -38,7 +38,8 @@ var results = {
 	watchman: {
 		available: [],
 		unavailable: []
-	}
+	},
+	lastRun: new Date().toString()
 };
 
 casper.start(narrowsUrl)
