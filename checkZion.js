@@ -1,5 +1,6 @@
 var spawn = require('child_process').spawn;
 var casperChild = spawn('casperjs', ['casperTasks.js']);
+var emails = require('./lib/emails');
 
 var result = '';
 
@@ -16,12 +17,10 @@ casperChild.stdout.on('end', function () {
 	console.log(result);
     var resultsObj = JSON.parse(result);
 
-    if (resultsObj.narrows.available.length) {
+    if (resultsObj.narrows.available.length || resultsObj.watchman.available.length) {
     	sendAlert('narrows');
-    }
-
-    if (resultsObj.watchman.available.length) {
-    	sendAlert('watchman');
+    } else {
+        emails.sendEmail(resultsObj);
     }
 
 });
