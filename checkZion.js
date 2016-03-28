@@ -13,17 +13,24 @@ casperChild.stdout.on('data', function (data) {
 casperChild.stdout.on('end', function () {
     console.log(casperOutput);
     var resultsObj = JSON.parse(casperOutput),
+        twoHoursAgo = new Date(myDate.getTime() - 7200000), // two hours ago
         cancellationDetected = false;
 
     if (resultsObj.narrows.available.length || resultsObj.watchman.available.length) {
-        emails.sendEmail(resultsObj);
+        Result.find({ cancellationDetected: true }).where('created_at').gt(twoHoursAgo).exec(function(err, results) {
+          if (err) throw err;
+
+          if (!results.length) {
+            emails.sendEmail(resultsObj);
+          }
+        });
         cancellationDetected = true;
     } else {
         console.log('No new cancellations detected.');
     }
 
     var newResult = Result({
-      cancellationDetected: false,
+      cancellationDetected: cancellationDetected,
       results: resultsObj,
       created_at: new Date()
     });
@@ -33,12 +40,6 @@ casperChild.stdout.on('end', function () {
       console.log('Result created!');
       mongoose.disconnect();
     });
-
-    /*Result.find({}, function(err, results) {
-      if (err) throw err;
-      console.log(results);
-    });*/
-
 });
 
 
