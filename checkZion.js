@@ -19,8 +19,9 @@ casperChild.stdout.on('end', function () {
 
     if (resultsObj.narrows.available.length || resultsObj.watchman.available.length) {
     	sendAlert('narrows');
-    } else {
         emails.sendEmail(resultsObj);
+    } else {
+        console.log('no new cancellations detected.');
     }
 
 });
