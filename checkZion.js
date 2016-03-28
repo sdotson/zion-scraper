@@ -1,12 +1,12 @@
 var spawn = require('child_process').spawn;
 var casperChild = spawn('casperjs', ['casperTasks.js']);
 var mongoose = require('mongoose');
-var emails = require('./lib/emails');
 var Result = require('./models/Result');
+var emails = require('./lib/emails');
 
 var casperOutput = '';
 
-function runCasperTasks() { 
+function runCasperTasks() {
   casperChild.stdout.on('data', function (data) {
       casperOutput += data.toString();
   });
@@ -44,5 +44,6 @@ function runCasperTasks() {
 }
 
 
-module.exports = runCasperTasks;
-
+module.exports = {
+  run: runCasperTasks
+};

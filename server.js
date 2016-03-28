@@ -6,12 +6,11 @@ var Result = require('./models/Result');
 
 var checkZion = require('./checkZion');
 
-var j = schedule.scheduleJob('*/30 * * * *', function(){
-  checkZion();
-  console.log('checkZion() ran.');
+var j = schedule.scheduleJob('*/2 * * * *', function(){
+  checkZion.run();
 });
 
-app.get("/logs/all", function(req, res) {
+app.get("/logs", function(req, res) {
 	Result.find(function(err, results) {
 	  if (err) return console.error(err);
 		res.json(results);
@@ -20,6 +19,12 @@ app.get("/logs/all", function(req, res) {
 
 app.get("/logs/last", function(req, res) {
 	Result.find().sort('-created_at').limit(1).exec(function(err, results){
+	    res.json(results);
+	});
+});
+
+app.get("/logs/first", function(req, res) {
+	Result.find().sort('+created_at').limit(1).exec(function(err, results){
 	    res.json(results);
 	});
 });
