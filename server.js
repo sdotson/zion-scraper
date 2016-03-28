@@ -6,7 +6,7 @@ var Result = require('./models/Result');
 
 var checkZion = require('./checkZion');
 
-var j = schedule.scheduleJob('*/2 * * * *', function(){
+var j = schedule.scheduleJob('*/30 * * * *', function(){
   checkZion.run();
 });
 
