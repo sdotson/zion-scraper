@@ -11,9 +11,8 @@ casperChild.stdout.on('data', function (data) {
 });
 
 casperChild.stdout.on('end', function () {
-    console.log(casperOutput);
     var resultsObj = JSON.parse(casperOutput),
-        twoHoursAgo = new Date(myDate.getTime() - 7200000), // two hours ago
+        twoHoursAgo = new Date(new Date().getTime() - 7200000), // two hours ago
         cancellationDetected = false;
 
     if (resultsObj.narrows.available.length || resultsObj.watchman.available.length) {
@@ -37,7 +36,7 @@ casperChild.stdout.on('end', function () {
 
     newResult.save(function(err) {
       if (err) throw err;
-      console.log('Result created!');
+      console.log('CasperJS result logged!');
       mongoose.disconnect();
     });
 });
