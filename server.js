@@ -39,5 +39,17 @@ app.get("/logs/last10", function(req, res) {
 	});
 });
 
+app.get("/logs/cancellations", function(req, res) {
+	Result.find({ cancellationDetected: true }).sort('-created_at').limit(10).exec(function(err, results){
+	    res.json(results);
+	});
+});
+
+app.get("/logs/cancellations/last", function(req, res) {
+	Result.find({ cancellationDetected: true }).sort('-created_at').limit(1).exec(function(err, results){
+	    res.json(results);
+	});
+});
+
 app.listen(3000);
 console.log('Starting server on port 3000');
