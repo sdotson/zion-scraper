@@ -7,8 +7,6 @@ process.on('SIGINT', function() {
   }); 
 }); 
 
-mongoose.connect('mongodb://localhost/zion');
-
 var Schema = mongoose.Schema;
 
 var resultSchema = new Schema({

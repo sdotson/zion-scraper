@@ -1,12 +1,10 @@
-var spawn = require('child_process').spawn;
-var casperChild = spawn('casperjs', ['casperTasks.js']);
-var mongoose = require('mongoose');
-var Result = require('./models/Result');
-var emails = require('./lib/emails');
-
-var casperOutput = '';
-
 function runCasperTasks() {
+  var mongoose = require('mongoose');
+  var Result = require('./models/Result');
+  var emails = require('./lib/emails');
+  var casperOutput = '';
+  var spawn = require('child_process').spawn;
+  var casperChild = spawn('casperjs', ['casperTasks.js']);
   casperChild.stdout.on('data', function (data) {
       casperOutput += data.toString();
   });
@@ -38,7 +36,6 @@ function runCasperTasks() {
       newResult.save(function(err) {
         if (err) throw err;
         console.log('CasperJS result logged!');
-        mongoose.disconnect();
       });
   });
 }

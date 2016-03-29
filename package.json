@@ -12,6 +12,7 @@
     "casperjs": "^1.1.0-beta5",
     "express": "^4.13.4",
     "mongoose": "^4.4.10",
+    "node-crontab": "0.0.8",
     "node-schedule": "^1.1.0",
     "sparkpost": "^1.2.0"
   }

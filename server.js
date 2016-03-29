@@ -6,9 +6,15 @@ var Result = require('./models/Result');
 
 var checkZion = require('./checkZion');
 
-var j = schedule.scheduleJob('*/30 * * * *', function(){
-  checkZion.run();
+
+var crontab = require('node-crontab');
+var jobId = crontab.scheduleJob("*/30 * * * *", function(){ //This will call this function every 2 minutes 
+    console.log("It's been 30 minutes. Running checkZion...");
+    checkZion.run();
 });
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/zion');
 
 app.get("/logs", function(req, res) {
 	Result.find(function(err, results) {
