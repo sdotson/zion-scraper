@@ -1,19 +1,17 @@
 var schedule = require('node-schedule');
 var express = require('express');
 var app = express();
+var mongoose = require('mongoose');
 
 var Result = require('./models/Result');
 
 var checkZion = require('./checkZion');
 
-
-var crontab = require('node-crontab');
-var jobId = crontab.scheduleJob("*/30 * * * *", function(){ //This will call this function every 2 minutes 
-    console.log("It's been 30 minutes. Running checkZion...");
-    checkZion.run();
+var j = schedule.scheduleJob('*/15 * * * *', function(){
+  console.log('15 minutes have passed. Running checkZion script...');
+  checkZion.run();
 });
 
-var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/zion');
 
 app.get("/logs", function(req, res) {
