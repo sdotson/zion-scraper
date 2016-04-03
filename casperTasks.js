@@ -8,6 +8,7 @@ var casper = require('casper').create({
 
 var campsites = require('./lib/campsites');
 var hikes = require('./lib/hikes');
+var blmhikes = require('./lib/blmhikes');
 
 var narrowsUrl = 'https://zionpermits.nps.gov/wilderness.cfm?TripTypeID=1';
 
@@ -29,12 +30,18 @@ var watchmanDates = [
 	}
 ];
 
+var buckskinUrl = 'https://www.blm.gov/az/paria/hikingcalendar.cfm?areaid=3';
+
 var results = {
 	narrows: {
 		available: [],
 		unavailable: []
 	},
 	watchman: {
+		available: [],
+		unavailable: []
+	},
+	buckskin: {
 		available: [],
 		unavailable: []
 	},
@@ -48,6 +55,10 @@ casper.start(narrowsUrl)
 	.thenOpen(watchmanUrl)
 	.then(function() {
 		return campsites.checkAvailability(watchmanDates);
+	})
+	.thenOpen(buckskinUrl)
+	.then(function() {
+		return blmhikes.checkPermits();
 	});
 
 casper.run(function() {
