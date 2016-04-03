@@ -1,16 +1,15 @@
-var schedule = require('node-schedule');
-var express = require('express');
-var app = express();
-var mongoose = require('mongoose');
+'use strict';
 
-var Result = require('./models/Result');
-
-var checkZion = require('./checkZion');
-
-var j = schedule.scheduleJob('*/15 * * * *', function(){
-  console.log('15 minutes have passed. Running checkZion script...');
-  checkZion.run();
-});
+const schedule = require('node-schedule'),
+	express = require('express'),
+	app = express(),
+	mongoose = require('mongoose'),
+	Result = require('./models/Result'),
+	checkZion = require('./checkZion'),
+	j = schedule.scheduleJob('*/15 * * * *', function(){
+	  console.log('15 minutes have passed. Running checkZion script...');
+	  checkZion.run();
+	});
 
 mongoose.connect('mongodb://localhost/zion');
 
