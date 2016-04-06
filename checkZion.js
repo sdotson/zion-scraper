@@ -5,7 +5,7 @@ function runCasperTasks() {
         Result = require('./models/Result'),
         emails = require('./lib/emails'),
         spawn = require('child_process').spawn,
-        casperChild = spawn('casperjs', ['casperTasks.js']);
+        casperChild = spawn('casperjs', ['casperTasks.js', '--ignore-ssl-errors=true']);
 
     let casperOutput = '';
 
