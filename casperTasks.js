@@ -2,8 +2,10 @@ var casper = require('casper').create({
 		pageSettings: {
 	        userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:23.0) Gecko/20130404 Firefox/23.0",
 	        webSecurityEnabled: false,
-	        loadImages:  false
-	    }
+	        loadImages:  false,
+	    }/*,
+	    verbose: true,
+	    logLevel: "debug"*/
 	}),
 	campsites = require('./lib/campsites'),
 	hikes = require('./lib/hikes'),
