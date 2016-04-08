@@ -13,6 +13,8 @@ const schedule = require('node-schedule'),
 
 mongoose.connect('mongodb://localhost/zion');
 
+checkZion.run();
+
 app.get("/logs", function(req, res) {
 	Result.find(function(err, results) {
 	  if (err) return console.error(err);
