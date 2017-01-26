@@ -19,7 +19,7 @@ function runCasperTasks() {
 
         let cancellationDetected = false;
 
-        if (resultsObj.narrows.available.length || resultsObj.watchman.available.length) {
+        if (resultsObj.narrows.available.length || resultsObj.watchman.available.length || resultsObj.buckskin.available.length) {
             Result.find({ cancellationDetected: true }).where('created_at').gt(twoHoursAgo).exec(function(err, results) {
                 if (err) throw err;
 
